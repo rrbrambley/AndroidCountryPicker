@@ -2,10 +2,9 @@ AndroidCountryPicker
 ====================
 
 Includes support for getting country calling code.
-
-## Forked from: https://github.com/roomorama/AndroidCountryPicker
-## Data: https://github.com/lilpirate/countries
-## Original data: https://github.com/mledoze/countries
+Forked from: https://github.com/roomorama/AndroidCountryPicker
+Data: https://github.com/lilpirate/countries
+Original data: https://github.com/mledoze/countries
 
 
 Thanks @thomasdao for his awesome country picker. :)
