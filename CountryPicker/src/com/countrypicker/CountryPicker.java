@@ -4,13 +4,12 @@ import java.io.BufferedReader;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Comparator;
-import java.util.Currency;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
 
+import org.json.JSONArray;
 import org.json.JSONObject;
 
 import android.annotation.SuppressLint;
@@ -69,22 +68,6 @@ public class CountryPicker extends DialogFragment implements
 	}
 
 	/**
-	 * Convenient function to get currency code from country code currency code
-	 * is in English locale
-	 * 
-	 * @param countryCode
-	 * @return
-	 */
-	public static Currency getCurrencyCode(String countryCode) {
-		try {
-			return Currency.getInstance(new Locale("en", countryCode));
-		} catch (Exception e) {
-
-		}
-		return null;
-	}
-
-	/**
 	 * Get all countries with code and name from res/raw/countries.json
 	 * 
 	 * @return
@@ -95,25 +78,30 @@ public class CountryPicker extends DialogFragment implements
 				allCountriesList = new ArrayList<Country>();
 
 				// Read from local file
-				String allCountriesString = readFileAsString(getActivity());
+				String allCountriesString = readFileAsString( getActivity() );
 				JSONObject jsonObject = new JSONObject(allCountriesString);
 				Iterator<?> keys = jsonObject.keys();
 
 				// Add the data to all countries list
-				while (keys.hasNext()) {
+				while ( keys.hasNext() ) {
 					String key = (String) keys.next();
 					Country country = new Country();
 					country.setCode(key);
-					country.setName(jsonObject.getString(key));
+
+                    JSONArray details = jsonObject.getJSONArray( key );
+					country.setName( details.getString( 0 ) );
+                    country.setCallingCode( details.getString( 1 ) );
+
 					allCountriesList.add(country);
 				}
 
 				// Sort the all countries list based on country name
-				Collections.sort(allCountriesList, this);
+				//Collections.sort(allCountriesList, this);
+                // disabled sorting because JSON list is already sorted by country name
 
 				// Initialize selected countries with all countries
 				selectedCountriesList = new ArrayList<Country>();
-				selectedCountriesList.addAll(allCountriesList);
+				selectedCountriesList.addAll( allCountriesList );
 
 				// Return
 				return allCountriesList;
@@ -132,10 +120,9 @@ public class CountryPicker extends DialogFragment implements
 	 * @return
 	 * @throws java.io.IOException
 	 */
-	private static String readFileAsString(Context context)
+	private static String readFileAsString( Context context )
 			throws java.io.IOException {
-		InputStream inputStream = context.getResources().openRawResource(
-				R.raw.countries);
+		InputStream inputStream = context.getResources().openRawResource( R.raw.countries );
 		BufferedReader reader = new BufferedReader(new InputStreamReader(
 				inputStream));
 		StringBuffer result = new StringBuffer();
@@ -197,18 +184,17 @@ public class CountryPicker extends DialogFragment implements
 		countryListView.setAdapter(adapter);
 
 		// Inform listener
-		countryListView.setOnItemClickListener(new OnItemClickListener() {
+		countryListView.setOnItemClickListener( new OnItemClickListener() {
 
 			@Override
 			public void onItemClick(AdapterView<?> parent, View view,
 					int position, long id) {
 				if (listener != null) {
 					Country country = selectedCountriesList.get(position);
-					listener.onSelectCountry(country.getName(),
-							country.getCode());
+					listener.onSelectCountry( country.getName(), country.getCode(), country.getCallingCode() );
 				}
 			}
-		});
+		} );
 
 		// Search for which countries matched user query
 		searchEditText.addTextChangedListener(new TextWatcher() {
