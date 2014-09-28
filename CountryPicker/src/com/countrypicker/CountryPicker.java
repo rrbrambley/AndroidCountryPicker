@@ -4,6 +4,7 @@ import java.io.BufferedReader;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Comparator;
 import java.util.Iterator;
 import java.util.List;
@@ -94,6 +95,13 @@ public class CountryPicker extends DialogFragment implements
 
 					allCountriesList.add(country);
 				}
+
+                Collections.sort(allCountriesList, new Comparator<Country>() {
+                    @Override
+                    public int compare(Country lhs, Country rhs) {
+                        return lhs.getName().compareTo(rhs.getName());
+                    }
+                });
 
 				// Sort the all countries list based on country name
 				//Collections.sort(allCountriesList, this);
