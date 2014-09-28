@@ -1,3 +1,5 @@
+.DS_STORE
+
 # built application files
 *.apk
 *.ap_
@@ -19,7 +21,9 @@ local.properties
 .classpath
 .project
 
-# AndroidStudio config
-CountryPicker/CountryPicker.iml
-CountryPicker/build.gradle
-CountryPicker/build/
+# Android Studio
+build/
+.gradle/
+
+*.iml
+.idea/
